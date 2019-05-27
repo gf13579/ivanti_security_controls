@@ -5,3 +5,10 @@ modtime = 1554182691.831770000
 [app/launcher]
 version = 7.2.0
 modtime = 1554182691.834172000
+
+[views/missing_patches_and_service_packs]
+access = read : [ * ], write : [ admin ]
+export = none
+owner = admin
+version = 7.2.5.1
+modtime = 1558998394.315677000

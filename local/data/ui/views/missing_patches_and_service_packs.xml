@@ -1,0 +1,315 @@
+<form theme="light">
+  <label>Missing Patches and Service Packs</label>
+  <fieldset submitButton="false">
+    <input type="time" token="timePicker1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Endpoint Compliance by # Missing Patches</title>
+      <chart>
+        <search>
+          <query>index=ivanti sourcetype="ivanti:securitycontrols:patchcompliance" 
+| dedup smachName 
+| table smachName, PatchMissing, ServicePackMissing 
+| stats count(eval(PatchMissing&lt;=2)) AS "0 to 2 Patches Missing", count(eval(PatchMissing&gt;=3 AND PatchMissing&lt;=5)) AS "3-5 Patches Missing", count(eval(PatchMissing&gt;5 AND PatchMissing&lt;=10)) AS "5 to 10 Patches Missing", count(eval(PatchMissing&gt;10)) AS "More than 10 Patches Missing" | transpose | rename "row 1" as count | where count!=0</query>
+          <earliest>$timePicker1.earliest$</earliest>
+          <latest>$timePicker1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.fieldColors">{"More than 10 Patches Missing":0xD96459,"5 to 10 Patches Missing":0xFF6F69,"3-5 Patches Missing:0xFFCC5C,"0 to 2 Patches Missing":0xFFEEAD}</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Endpoints Missing Patches by Severity</title>
+      <chart>
+        <search>
+          <query>index=ivanti sourcetype="ivanti:securitycontrols:patchcompliance" 
+| dedup smachName 
+| stats count(eval(MissingPatchesCritical&gt;0)) AS Critical, count(eval(MissingPatchesImportant&gt;0)) AS Important, count(eval(MissingPatchesWithoutSeverity&gt;0)) AS Undefined, count(eval(MissingPatchesModerate&gt;0)) AS Moderate, count(eval(MissingPatchesLow&gt;0)) AS Low 
+| eval data="count" 
+| table data, Low, Moderate, Undefined, Important, Critical</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.fieldColors">{"Critical":0xD96459,"Important":0xFF6F69,"Undefined":0xFFCC5C,"Moderate":0xF2E394,"Low":0xFFEEAD}</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top 10 Missing Patches by Count</title>
+      <chart>
+        <search>
+          <query>index=ivanti sourcetype=ivanti:securitycontrols:scandetails currentPatchStatus!="Patch Installed" 
+| eval thing= patchbulletinid." - ".prodname 
+| top thing</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top 10 Machines Missing Patches</title>
+      <chart>
+        <search>
+          <query>index=ivanti sourcetype="ivanti:securitycontrols:patchcompliance" | dedup smachName
+| eval missing=PatchMissing + ServicePackMissing 
+| sort -missing 
+| head 10 
+| table smachName, ServicePackMissing, MissingPatches* 
+| rename MissingPatches* as *-Patches, ServicePackMissing as "Service Packs", smachName as Machine</query>
+          <earliest>$timePicker1.earliest$</earliest>
+          <latest>$timePicker1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.fieldColors">{"Service Packs":0x622569,"Critical-Patches":0xD96459,"Important-Patches":0xFF6F69,"WithoutSeverity-Patches":0xFFCC5C,"Moderate-Patches":0xF2E394,"Low-Patches":0xFFEEAD}</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="height">280</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Machines Not Recently Scanned</title>
+      <input type="text" token="numberOfDaysToken" searchWhenChanged="true">
+        <label>Number of days</label>
+        <default>30</default>
+      </input>
+      <table>
+        <search>
+          <query>index=ivanti sourcetype="ivanti:securitycontrols:patchcompliance" 
+| dedup smachName 
+| table smachName, smachScanDate 
+| eval scanDate=strptime(smachScanDate, "%Y-%m-%d %H:%M:%S.%3N") 
+| eval scanAgeInDays=round((now()-scanDate)/86400,0) 
+| where scanAgeInDays&gt;$numberOfDaysToken$
+| eval scanDate = strftime(scanDate, "%Y-%m-%d %H:%M:%S") 
+| table smachName, scanAgeInDays, scanDate | sort scanDate
+| rename scanDate as "Most Recent Scan", smachName as "Machine", scanAgeInDays as "Days since last scan"</query>
+          <earliest>$timePicker1.earliest$</earliest>
+          <latest>$timePicker1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">5</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Patches Missing by Machine (BNEWKS53)</title>
+      <table>
+        <search>
+          <query>index=ivanti sourcetype=ivanti:securitycontrols:scandetails name=bnewks53 currentPatchStatus!="Patch Installed" 
+| table smachdomainname, name, lastcheckin, currentPatchStatus, patchSeverity, patchbulletinid, patchbulletinurl, patchqnumbers, prodname, smachosid 
+| rename smachdomainname as Domain, name as Machine, lastcheckin as "Last Check-In Date", currentPatchStatus as "Patch Status", patchSeverity as Severity, patchbulletinid as KB, patchbulletinurl as URL, patchqnumbers as QNumbers, prodname as Product, smachosid as "OS ID"</query>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">5</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Products with Highest # Important or Critical Missing Patches</title>
+      <table>
+        <search>
+          <query>index=ivanti sourcetype=ivanti:securitycontrols:scandetails currentPatchStatus!="Patch Installed" patchSeverity=Critical OR patchSeverity=Important | top prodname showperc=false | rename prodname as Product</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Most Common Products Missing Patches</title>
+      <table>
+        <search>
+          <query>index=ivanti sourcetype=ivanti:securitycontrols:scandetails currentPatchStatus!="Patch Installed" 
+| top prodname showperc=false | rename prodname as Product</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">heatmap</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Least Common Products Missing Patches</title>
+      <table>
+        <search>
+          <query>index=ivanti sourcetype=ivanti:securitycontrols:scandetails currentPatchStatus!="Patch Installed" 
+| rare prodname showperc=false | rename prodname as Product</query>
+          <earliest>0</earliest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

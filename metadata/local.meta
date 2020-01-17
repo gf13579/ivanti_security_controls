@@ -10,5 +10,19 @@ modtime = 1554182691.834172000
 access = read : [ * ], write : [ admin ]
 export = none
 owner = admin
-version = 7.2.5.1
-modtime = 1558998394.315677000
+version = 7.3.2
+modtime = 1579222966.634917000
+
+[nav/default]
+version = 7.3.2
+modtime = 1579221926.887138000
+
+[views/missing_patch_search]
+owner = greg.ford
+version = 7.3.2
+modtime = 1576819592.503661000
+
+[views/deployments]
+owner = greg.ford
+version = 7.3.2
+modtime = 1579224684.900078000

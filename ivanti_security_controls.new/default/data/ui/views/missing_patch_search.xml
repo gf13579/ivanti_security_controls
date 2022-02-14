@@ -1,0 +1,38 @@
+<form version="1.1">
+  <label>Missing Patch Search</label>
+  <fieldset submitButton="false">
+    <input type="text" token="machineName">
+      <label>Machine</label>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="time" token="timePicker1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>sourcetype=ivanti:securitycontrols:scandetails name=$machineName$ currentPatchStatus!="Patch Installed" 
+| table smachdomainname, name, lastcheckin, currentPatchStatus, patchSeverity, patchbulletinid, patchbulletinurl, patchqnumbers, prodname, smachosid 
+| rename smachdomainname as Domain, name as Machine, lastcheckin as "Last Check-In Date", currentPatchStatus as "Patch Status", patchSeverity as Severity, patchbulletinid as KB, patchbulletinurl as URL, patchqnumbers as QNumbers, prodname as Product, smachosid as "OS ID"</query>
+          <earliest>$timePicker1.earliest$</earliest>
+          <latest>$timePicker1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>

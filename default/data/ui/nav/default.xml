@@ -1,4 +1,4 @@
-<nav search_view="search">
+<nav search_view="search" color="#65A637">
   <view name="missing_patches_and_service_packs" default='true' />
   <view name="deployments"/>
   <view name="missing_patch_search"/>

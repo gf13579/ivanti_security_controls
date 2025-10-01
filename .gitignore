@@ -1,1 +1,4 @@
 local.meta
+*.pyc
+__pycache__/*
+passwords.conf
